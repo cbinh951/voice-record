@@ -1,6 +1,6 @@
-import { Stack } from '@mui/material';
+import { Box, Stack } from '@mui/material';
 import BasicCard from '../../components/Card';
-// import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const users = [
   {
@@ -25,7 +25,7 @@ const ListUser = () => (
         <BasicCard name={user.name} key={user.id} />
       ))}
     </Stack>
-    {/* <Box
+    <Box
       sx={{
         display: 'flex',
         alignItems: 'center',
@@ -35,7 +35,7 @@ const ListUser = () => (
       <Link to="/add">
         <BasicCard />
       </Link>
-    </Box> */}
+    </Box>
   </>
 );
 

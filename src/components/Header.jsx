@@ -11,7 +11,8 @@ const Header = () => {
       <Container maxWidth="lg">
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            <Link to="/">Voice</Link>
+            {/* <Link to="/">Voice</Link> */}
+            Voice
           </Typography>
         </Toolbar>
       </Container>

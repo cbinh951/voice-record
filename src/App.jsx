@@ -5,7 +5,7 @@ import Header from './components/Header'; // Assuming you have a Header componen
 import ListUser from './pages/ListUser/ListUser';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import AddUser from './pages/AddUser/AddUser';
-import VoiceRecord from './pages/VoiceRecord/VoiceRecord';
+import VoiceRecord from './pages/VoiceRecord/VoiceRecord1';
 
 const MainContent = styled.div`
   /* Add your main content styles here */
