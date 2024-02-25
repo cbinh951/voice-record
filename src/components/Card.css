@@ -1,0 +1,14 @@
+.hoverable-card {
+  transition: background-color 0.3s;
+  width: 300px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.hoverable-card:hover {
+  cursor: pointer;
+  background-color: #f0f0f0; /* Grey background color */
+}
