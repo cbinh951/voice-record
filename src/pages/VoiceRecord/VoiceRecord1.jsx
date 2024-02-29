@@ -1,50 +1,111 @@
-import { useState } from 'react';
-import { Button, Box } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Button, Box, Typography } from '@mui/material';
 import MicIcon from '@mui/icons-material/Mic';
 import './VoiceRecord1.css';
-import AudioRecorder from './AudioRecorder';
+import AudioReactRecorder, { RecordState } from 'audio-react-recorder';
+import 'audio-react-recorder/dist/index.css';
+import { useNavigate } from 'react-router-dom'; // Import useHistory
+
 const VoiceRecord = () => {
   const [isRecording, setIsRecording] = useState(false);
+  const [recordState, setRecordState] = useState(RecordState.STOP);
+  const [audioData, setAudioData] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    let timeout;
+    if (isRecording) {
+      timeout = setTimeout(() => {
+        handleStopRecording();
+      }, 6000); // Stop recording after 5 seconds
+    }
+    return () => clearTimeout(timeout);
+  }, [isRecording]);
 
   const handleButtonClick = () => {
-    setIsRecording(!isRecording);
+    if (isRecording) {
+      handleStopRecording();
+    } else {
+      setIsRecording(true);
+      setRecordState(RecordState.START);
+    }
+  };
+
+  const handleStopRecording = () => {
+    setIsRecording(false);
+    setRecordState(RecordState.STOP);
+  };
+
+  const onStop = (data) => {
+    setAudioData(data);
+    setIsRecording(false);
+    console.log('onStop: audio data', data);
+  };
+
+  const handleRegisterRecord = () => {
+    navigate('/');
   };
 
   return (
-    // is-recording
-    <Box
-      display="flex"
-      alignItems="center"
-      justifyContent="center"
-      height="100vh"
-      bgcolor="#d8d8d8" // Change to your secondary color
-    >
-      <AudioRecorder />
-      <button
-        className={`${isRecording ? 'mic-toggle is-recording' : 'mic-toggle'}`}
-        id="mic"
+    <>
+      <Typography variant="h6" gutterBottom>
+        Hello Binh Pham
+      </Typography>
+      <Box
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+        height="500px"
+        bgcolor="#d8d8d8"
+        position={'relative'}
       >
-        <Button
-          onClick={handleButtonClick}
-          sx={{
-            position: 'relative',
-            borderRadius: '50%',
-            width: 100,
-            height: 100,
-            fontSize: '3em',
-            color: '#fff',
-            padding: 0,
-            margin: 0,
-            background: 'crimson', // Change to your primary color
-            zIndex: 999,
-            cursor: 'pointer',
-          }}
+        <button
+          className={`${
+            isRecording ? 'mic-toggle is-recording' : 'mic-toggle'
+          }`}
+          id="mic"
         >
-          <MicIcon sx={{ fontSize: 'inherit' }} />
+          <Button
+            onClick={handleButtonClick}
+            sx={{
+              position: 'relative',
+              borderRadius: '50%',
+              width: 100,
+              height: 100,
+              fontSize: '3em',
+              color: '#fff',
+              padding: 0,
+              margin: 0,
+              background: 'crimson',
+              zIndex: 999,
+              cursor: 'pointer',
+            }}
+          >
+            <MicIcon sx={{ fontSize: 'inherit' }} />
+          </Button>
+        </button>
+        <AudioReactRecorder
+          state={recordState}
+          onStop={onStop}
+          backgroundColor="#d8d8d8"
+          sx={{ position: 'absolute', top: 0 }}
+        />
+        {audioData && (
+          <audio
+            id="audio"
+            controls
+            src={audioData ? audioData.url : null}
+          ></audio>
+        )}
+        <Button
+          variant="contained"
+          sx={{ position: 'absolute', top: '400px' }}
+          onClick={handleRegisterRecord}
+        >
+          Save
         </Button>
-      </button>
-      <audio className="playback" controls></audio>
-    </Box>
+      </Box>
+    </>
   );
 };
 

@@ -14,7 +14,10 @@ button {
   height: 8rem;
   border-radius: 50%;
   background-color: crimson;
-  margin-bottom: 4rem;
+  /* margin-bottom: 4rem;
+  margin-right: 30px; */
+  position: absolute;
+  top: 50px
 }
 
 .mic-toggle:after,
@@ -93,4 +96,14 @@ button {
   margin-bottom: 1rem;
   box-shadow: 0 0 1rem rgba(0, 0, 0, 0.2);
   border-radius: 999px;
+}
+
+/* .audio-react-recorder {
+  position: absolute;
+  top: 0;
+} */
+
+#audio {
+  position: absolute;
+  top: 319px;
 }

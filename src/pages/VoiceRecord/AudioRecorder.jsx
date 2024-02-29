@@ -1,62 +1,70 @@
-import React, { useState } from 'react';
+import React, { Component } from 'react';
 
-const AudioRecorder = () => {
-  const [isRecording, setIsRecording] = useState(false);
-  const [audioChunks, setAudioChunks] = useState([]);
+import AudioReactRecorder, { RecordState } from 'audio-react-recorder';
+import 'audio-react-recorder/dist/index.css';
 
-  let mediaRecorder;
-  let stream;
+class AudioRecord extends Component {
+  constructor(props) {
+    super(props);
 
-  const startRecording = async () => {
-    try {
-      stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      mediaRecorder = new MediaRecorder(stream);
+    this.state = {
+      recordState: null,
+      audioData: null,
+    };
+  }
 
-      mediaRecorder.addEventListener('dataavailable', (event) => {
-        setAudioChunks((prevChunks) => [...prevChunks, event.data]);
-      });
-
-      mediaRecorder.start();
-      setIsRecording(true);
-    } catch (error) {
-      console.error('Error accessing microphone:', error);
-      // Handle error (e.g., display an error message to the user)
-    }
+  start = () => {
+    this.setState({
+      recordState: RecordState.START,
+    });
   };
 
-  const stopRecording = () => {
-    if (stream) {
-      mediaRecorder.stop();
-      stream.getTracks().forEach((track) => track.stop());
-      setIsRecording(false);
-    }
+  pause = () => {
+    this.setState({
+      recordState: RecordState.PAUSE,
+    });
   };
 
-  const handleRecordClick = () => {
-    if (!isRecording) {
-      startRecording();
-    } else {
-      stopRecording();
-    }
+  stop = () => {
+    this.setState({
+      recordState: RecordState.STOP,
+    });
   };
 
-  const handlePlayback = () => {
-    const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
-    const audioUrl = URL.createObjectURL(audioBlob);
-    const audio = new Audio(audioUrl);
-    audio.play();
+  onStop = (data) => {
+    this.setState({
+      audioData: data,
+    });
+    console.log('onStop: audio data', data);
   };
 
-  return (
-    <div>
-      <button onClick={handleRecordClick}>
-        {isRecording ? 'Stop Recording' : 'Start Recording'}
-      </button>
-      <button onClick={handlePlayback} disabled={audioChunks.length === 0}>
-        Playback
-      </button>
-    </div>
-  );
-};
+  render() {
+    const { recordState } = this.state;
 
-export default AudioRecorder;
+    return (
+      <div>
+        <AudioReactRecorder
+          state={recordState}
+          onStop={this.onStop}
+          backgroundColor="#d8d8d8"
+        />
+        <audio
+          id="audio"
+          controls
+          src={this.state.audioData ? this.state.audioData.url : null}
+        ></audio>
+        <button id="record" onClick={this.start}>
+          Start
+        </button>
+        <button id="pause" onClick={this.pause}>
+          Pause
+        </button>
+        <button id="stop" onClick={this.stop}>
+          Stop
+        </button>
+      </div>
+    );
+  }
+}
+
+export default AudioRecord;
