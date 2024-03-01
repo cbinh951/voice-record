@@ -11,6 +11,10 @@ const MainContent = styled.div`
   /* Add your main content styles here */
   max-width: 720px;
   margin: auto;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 `;
 
 function App() {
@@ -18,7 +22,7 @@ function App() {
     <>
       <Router>
         <GlobalStyles />
-        <Header />
+        {/* <Header /> */}
         <MainContent>
           <Routes>
             <Route path="/" element={<ListUser />} />

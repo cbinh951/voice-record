@@ -3,6 +3,7 @@ import { Button, Box, Typography } from '@mui/material';
 import MicIcon from '@mui/icons-material/Mic';
 import './VoiceRecord1.css';
 import AudioReactRecorder, { RecordState } from 'audio-react-recorder';
+// import AudioReactRecorder, { RecordState } from './AudioRecorder';
 import 'audio-react-recorder/dist/index.css';
 import { useNavigate } from 'react-router-dom'; // Import useHistory
 
@@ -48,7 +49,7 @@ const VoiceRecord = () => {
 
   return (
     <>
-      <Typography variant="h6" gutterBottom>
+      <Typography variant="h6" gutterBottom color={'white'}>
         Hello Binh Pham
       </Typography>
       <Box
@@ -56,7 +57,7 @@ const VoiceRecord = () => {
         alignItems="center"
         justifyContent="center"
         height="500px"
-        bgcolor="#d8d8d8"
+        bgcolor="rgb(81 65 65 / 50%)"
         position={'relative'}
       >
         <button
@@ -87,16 +88,14 @@ const VoiceRecord = () => {
         <AudioReactRecorder
           state={recordState}
           onStop={onStop}
-          backgroundColor="#d8d8d8"
-          sx={{ position: 'absolute', top: 0 }}
+          backgroundColor="rgb(81 65 65 / 50%)"
+          // backgroundColor="red"
         />
-        {audioData && (
-          <audio
-            id="audio"
-            controls
-            src={audioData ? audioData.url : null}
-          ></audio>
-        )}
+        <audio
+          id="audio"
+          controls
+          src={audioData ? audioData.url : null}
+        ></audio>
         <Button
           variant="contained"
           sx={{ position: 'absolute', top: '400px' }}
