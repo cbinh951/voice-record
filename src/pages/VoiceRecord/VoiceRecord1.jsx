@@ -5,14 +5,16 @@ import './VoiceRecord1.css';
 import AudioReactRecorder, { RecordState } from 'audio-react-recorder';
 // import AudioReactRecorder, { RecordState } from './AudioRecorder';
 import 'audio-react-recorder/dist/index.css';
-import { useNavigate } from 'react-router-dom'; // Import useHistory
+import { useNavigate, useSearchParams } from 'react-router-dom'; // Import useHistory
 
 const VoiceRecord = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [recordState, setRecordState] = useState(RecordState.STOP);
   const [audioData, setAudioData] = useState(null);
   const navigate = useNavigate();
-
+  const userNameStorage = localStorage.getItem('userName');
+  const [searchParams] = useSearchParams();
+  const username = searchParams.get('username');
   useEffect(() => {
     let timeout;
     if (isRecording) {
@@ -50,14 +52,14 @@ const VoiceRecord = () => {
   return (
     <>
       <Typography variant="h6" gutterBottom color={'white'}>
-        Hello Binh Pham
+        Hello {username || userNameStorage}
       </Typography>
       <Box
         display="flex"
         alignItems="center"
         justifyContent="center"
         height="500px"
-        bgcolor="rgb(81 65 65 / 50%)"
+        bgcolor="rgb(106 107 115 / 50%)"
         position={'relative'}
       >
         <button
@@ -88,8 +90,8 @@ const VoiceRecord = () => {
         <AudioReactRecorder
           state={recordState}
           onStop={onStop}
-          backgroundColor="rgb(81 65 65 / 50%)"
-          // backgroundColor="red"
+          // backgroundColor="rgb(81 65 65 / 50%)"
+          backgroundColor="rgb(1,55,91)"
         />
         <audio
           id="audio"
@@ -98,7 +100,7 @@ const VoiceRecord = () => {
         ></audio>
         <Button
           variant="contained"
-          sx={{ position: 'absolute', top: '400px' }}
+          sx={{ position: 'absolute', top: '400px', marginTop: '30px' }}
           onClick={handleRegisterRecord}
         >
           Save

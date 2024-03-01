@@ -1,7 +1,16 @@
 import { Box, Button, TextField, Typography } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const AddUser = () => {
+  const [userName, setUserName] = useState('');
+  const navigate = useNavigate();
+
+  const handleAddUser = () => {
+    localStorage.setItem('userName', userName);
+    navigate('/voice-record');
+  };
+
   return (
     <Box
       display="flex"
@@ -22,13 +31,17 @@ const AddUser = () => {
           label="User name"
           variant="filled"
           backgroundColor="white"
+          onChange={(e) => setUserName(e.target.value)}
         />
       </Box>
-      <Link to="/voice-record">
-        <Button variant="contained" size="large" sx={{ marginTop: '20px' }}>
-          Save
-        </Button>
-      </Link>
+      <Button
+        variant="contained"
+        size="large"
+        sx={{ marginTop: '20px' }}
+        onClick={handleAddUser}
+      >
+        Save
+      </Button>
     </Box>
   );
 };
