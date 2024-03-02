@@ -48,17 +48,30 @@ const VoiceRecord = () => {
   const handleRegisterRecord = async () => {
     const formData = new FormData();
     formData.append('file', audioData.blob, 'audio.wav');
-    formData.append('username', username);
+    if (username) {
+      formData.append('username', username);
+      const response = await fetch(
+        'https://voice-backend.cyberdino.dev/voice_id',
+        {
+          method: 'POST',
+          body: formData,
+        }
+      );
+      const responseData = await response.json();
+      console.log('responseData', responseData);
+    } else {
+      formData.append('username', userNameStorage);
+      const response = await fetch(
+        'https://voice-backend.cyberdino.dev/register',
+        {
+          method: 'POST',
+          body: formData,
+        }
+      );
+      const responseData = await response.json();
+      console.log('responseData', responseData);
+    }
 
-    const response = await fetch(
-      'https://voice-backend.cyberdino.dev/register',
-      {
-        method: 'POST',
-        body: formData,
-      }
-    );
-    const responseData = await response.json();
-    console.log('responseData', responseData);
     // navigate('/');
   };
 
