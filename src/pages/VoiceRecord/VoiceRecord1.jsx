@@ -45,8 +45,24 @@ const VoiceRecord = () => {
     console.log('onStop: audio data', data);
   };
 
-  const handleRegisterRecord = () => {
-    navigate('/');
+  const handleRegisterRecord = async () => {
+    const formData = new FormData();
+    formData.append('file', JSON.stringify(audioData));
+    formData.append('username', username);
+
+    const response = await fetch(
+      'https://voice-backend.cyberdino.dev/register',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: formData,
+      }
+    );
+    const responseData = await response.json();
+    console.log('responseData', responseData);
+    // navigate('/');
   };
 
   return (
