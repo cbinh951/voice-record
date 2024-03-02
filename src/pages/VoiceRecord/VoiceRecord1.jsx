@@ -47,16 +47,13 @@ const VoiceRecord = () => {
 
   const handleRegisterRecord = async () => {
     const formData = new FormData();
-    formData.append('file', JSON.stringify(audioData));
+    formData.append('file', audioData.blob, 'audio.wav');
     formData.append('username', username);
 
     const response = await fetch(
       'https://voice-backend.cyberdino.dev/register',
       {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: formData,
       }
     );
