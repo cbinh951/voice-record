@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Box, Typography } from '@mui/material';
 import MicIcon from '@mui/icons-material/Mic';
-import './VoiceRecord1.css';
+import './VoiceRecognition.css';
 import AudioReactRecorder, { RecordState } from 'audio-react-recorder';
 // import AudioReactRecorder, { RecordState } from './AudioRecorder';
 import 'audio-react-recorder/dist/index.css';
@@ -59,6 +59,49 @@ const VoiceRecord = () => {
       );
       const responseData = await response.json();
       console.log('responseData', responseData);
+      if (responseData.speaker === 'unknown') {
+        const formDataGreet = new FormData();
+        formDataGreet.append('username', username);
+
+        const responseGreet = await fetch(
+          'https://voice-backend.cyberdino.dev/greet',
+          {
+            method: 'POST',
+            body: formDataGreet,
+          }
+        )
+          .then((response) => response.arrayBuffer())
+          .then((arrayBuffer) => {
+            // Create audio context
+            const audioContext = new (window.AudioContext ||
+              window.webkitAudioContext)();
+
+            // Decode audio data
+            return audioContext
+              .decodeAudioData(arrayBuffer)
+              .then((audioBuffer) => {
+                // Create audio source
+                const source = audioContext.createBufferSource();
+                source.buffer = audioBuffer;
+
+                // Connect audio source to output (speakers)
+                source.connect(audioContext.destination);
+
+                // Start playback
+                source.start();
+
+                // Wait for 2 seconds before redirecting
+                setTimeout(() => {
+                  window.location.href = 'https://example.com'; // Redirect URL
+                }, 2000);
+              });
+          })
+          .catch((error) => {
+            // Handle error if any
+            console.error('Error:', error);
+          });
+        console.log('responseGreet', responseGreet);
+      }
     } else {
       formData.append('username', userNameStorage);
       const response = await fetch(

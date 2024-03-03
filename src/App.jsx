@@ -5,7 +5,8 @@ import Header from './components/Header'; // Assuming you have a Header componen
 import ListUser from './pages/ListUser/ListUser';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import AddUser from './pages/AddUser/AddUser';
-import VoiceRecord from './pages/VoiceRecord/VoiceRecord1';
+import VoiceRecord from './pages/VoiceRecord/VoiceRecord';
+import VoiceRecognition from './pages/VoiceRecognition/VoiceRecognition';
 
 const MainContent = styled.div`
   /* Add your main content styles here */
@@ -28,6 +29,7 @@ function App() {
             <Route path="/" element={<ListUser />} />
             <Route path="/add" element={<AddUser />} />
             <Route path="/voice-record" element={<VoiceRecord />} />
+            <Route path="/voice-recognition" element={<VoiceRecognition />} />
           </Routes>
         </MainContent>
       </Router>
