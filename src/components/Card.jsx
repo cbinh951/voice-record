@@ -11,7 +11,13 @@ export default function BasicCard({ name = '' }) {
     <Card className="hoverable-card">
       <CardContent>
         <Typography variant="h5" component="div">
-          {name ? name : <PersonAddAlt1Icon />}
+          {name ? (
+            name
+          ) : (
+            <>
+              <PersonAddAlt1Icon /> Add user
+            </>
+          )}
         </Typography>
       </CardContent>
     </Card>

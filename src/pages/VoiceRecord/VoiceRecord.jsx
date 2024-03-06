@@ -21,7 +21,6 @@ const VoiceRecord = () => {
   const [dataRecognition, setDataRecognition] = useState('');
   const [loadingRecognition, setLoadingRecognition] = useState(false);
   const navigate = useNavigate();
-
   const userNameStorage = localStorage.getItem('userName');
   const [searchParams] = useSearchParams();
   const username = searchParams.get('username');
@@ -115,7 +114,6 @@ const VoiceRecord = () => {
 
                 // Start playback
                 source.start();
-
                 // Wait for 2 seconds before redirecting
                 setTimeout(() => {
                   // window.location.href = 'https://example.com'; // Redirect URL
@@ -181,7 +179,9 @@ const VoiceRecord = () => {
     <>
       <Typography variant="h6" gutterBottom color={'white'}>
         Hello {username || userNameStorage}
-        {isIdentifySuccess && ', Please talk:'}
+        {isIdentifySuccess
+          ? ', Please talk:'
+          : ', Please identify using your voice'}
       </Typography>
       <Box sx={{ display: 'flex', gap: '20px' }}>
         <Box

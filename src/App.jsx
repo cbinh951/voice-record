@@ -1,7 +1,6 @@
 // App.jsx
 import styled from 'styled-components';
 import GlobalStyles from './styles/GlobalStyles';
-import Header from './components/Header'; // Assuming you have a Header component
 import ListUser from './pages/ListUser/ListUser';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import AddUser from './pages/AddUser/AddUser';
