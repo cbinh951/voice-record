@@ -12,6 +12,22 @@ import AudioReactRecorder, { RecordState } from 'audio-react-recorder';
 // import AudioReactRecorder, { RecordState } from './AudioRecorder';
 import 'audio-react-recorder/dist/index.css';
 import { useNavigate, useSearchParams } from 'react-router-dom'; // Import useHistory
+import Tour from 'reactour';
+
+const tourConfigRecord = [
+  {
+    selector: '[data-tut="reactour__icon-mic"]',
+    content: `Click here to record`,
+  },
+  {
+    selector: '[data-tut="reactour__btn-audio"]',
+    content: `Click here to play audio.`,
+  },
+  {
+    selector: '[data-tut="reactour__btn-save"]',
+    content: `Click this button to save a new user.`,
+  },
+];
 
 const VoiceRecord = () => {
   const [isRecording, setIsRecording] = useState(false);
@@ -24,6 +40,15 @@ const VoiceRecord = () => {
   const userNameStorage = localStorage.getItem('userName');
   const [searchParams] = useSearchParams();
   const username = searchParams.get('username');
+  const [isTourOpen, setIsTourOpen] = useState(false);
+  const accentColor = '#5cb7b7';
+
+  useEffect(() => {
+    const record = localStorage.getItem('record');
+    console.log(('addUser', record));
+    setIsTourOpen(record === 'true');
+  }, []);
+
   useEffect(() => {
     let timeout;
     if (isRecording) {
@@ -33,6 +58,11 @@ const VoiceRecord = () => {
     }
     return () => clearTimeout(timeout);
   }, [isRecording]);
+
+  const closeTour = () => {
+    setIsTourOpen(false);
+    localStorage.setItem('record', false);
+  };
 
   const handleButtonClick = () => {
     if (isRecording) {
@@ -197,6 +227,7 @@ const VoiceRecord = () => {
               isRecording ? 'mic-toggle is-recording' : 'mic-toggle'
             }`}
             id="mic"
+            data-tut="reactour__icon-mic"
           >
             <Button
               onClick={handleButtonClick}
@@ -227,11 +258,13 @@ const VoiceRecord = () => {
             id="audio"
             controls
             src={audioData ? audioData.url : null}
+            data-tut="reactour__btn-audio"
           ></audio>
           <Button
             variant="contained"
             sx={{ position: 'absolute', top: '400px', marginTop: '30px' }}
             onClick={handleRegisterRecord}
+            data-tut="reactour__btn-save"
           >
             Save
           </Button>
@@ -242,6 +275,15 @@ const VoiceRecord = () => {
           <TextareaAutosize maxRows={40} minRows={25} value={dataRecognition} />
         )}
       </Box>
+      <Tour
+        onRequestClose={closeTour}
+        steps={tourConfigRecord}
+        isOpen={isTourOpen}
+        maskClassName="mask-record"
+        className="helper"
+        rounded={5}
+        accentColor={accentColor}
+      />
     </>
   );
 };

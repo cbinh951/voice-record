@@ -5,6 +5,8 @@ import ListUser from './pages/ListUser/ListUser';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import AddUser from './pages/AddUser/AddUser';
 import VoiceRecord from './pages/VoiceRecord/VoiceRecord';
+import { useEffect } from 'react';
+// import { useState } from 'react';
 
 const MainContent = styled.div`
   /* Add your main content styles here */
@@ -17,6 +19,18 @@ const MainContent = styled.div`
 `;
 
 function App() {
+  useEffect(() => {
+    if (localStorage.getItem('firstList') !== 'false') {
+      localStorage.setItem('firstList', true);
+    }
+    if (localStorage.getItem('addUser') !== 'false') {
+      localStorage.setItem('addUser', true);
+    }
+    if (localStorage.getItem('record') !== 'false') {
+      localStorage.setItem('record', true);
+    }
+    // localStorage.setItem('firstList', true);
+  }, []);
   return (
     <>
       <Router>
