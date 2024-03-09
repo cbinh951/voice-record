@@ -25,7 +25,7 @@ const tourConfigRecord = [
   },
   {
     selector: '[data-tut="reactour__btn-save"]',
-    content: `Click this button to save a new user.`,
+    content: `Click this button to identify user.`,
   },
 ];
 
