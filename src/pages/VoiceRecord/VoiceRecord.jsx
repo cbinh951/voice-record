@@ -266,7 +266,7 @@ const VoiceRecord = () => {
             onClick={handleRegisterRecord}
             data-tut="reactour__btn-save"
           >
-            Save
+            Submit
           </Button>
         </Box>
 
