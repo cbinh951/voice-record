@@ -36,7 +36,6 @@ const VoiceRecord = () => {
   const username = searchParams.get('username');
   const [isTourOpen, setIsTourOpen] = useState(false);
   const accentColor = '#5cb7b7';
-  const [wakeup, setWakeup] = useState(false);
   const [idMusic, setIdMusic] = useState(0);
   const { setLoginSuccess } = useStore();
 
@@ -51,7 +50,7 @@ const VoiceRecord = () => {
     if (isRecording) {
       timeout = setTimeout(() => {
         handleStopRecording();
-      }, 6000); // Stop recording after 5 seconds
+      }, 5000); // Stop recording after 5 seconds
     }
     return () => clearTimeout(timeout);
   }, [isRecording]);
@@ -67,6 +66,7 @@ const VoiceRecord = () => {
     } else {
       setIsRecording(true);
       setRecordState(RecordState.START);
+      setIdMusic('');
     }
   };
 
@@ -78,26 +78,35 @@ const VoiceRecord = () => {
   const onStop = (data) => {
     setAudioData(data);
     setIsRecording(false);
-    console.log('onStop: audio data', data);
+    handleRegisterRecord(data);
   };
 
-  const handleRegisterRecord = async () => {
+  const handleRegisterRecord = async (data) => {
     const formData = new FormData();
-    formData.append('file', audioData.blob, 'audio.wav');
+    formData.append('file', audioData?.blob || data?.blob, 'audio.wav');
     if (isIdentifySuccess) {
-      const response = await fetch(
-        'https://voice-backend.cyberdino.dev/command',
-        {
-          method: 'POST',
-          body: formData,
+      setLoadingRecognition(true);
+      try {
+        const response = await fetch(
+          'https://voice-backend.cyberdino.dev/command',
+          {
+            method: 'POST',
+            body: formData,
+          }
+        );
+        const data = await response.json();
+        console.log('data', data);
+        if (data.command === 'play music') {
+          setIdMusic(data.value);
+        } else {
+          navigate('/');
         }
-      );
-      const data = await response.json();
-      console.log('data', data);
-      if (data.command === 'play music') {
-        setIdMusic(data.value);
+        return;
+      } catch {
+        console.log('error');
+      } finally {
+        setLoadingRecognition(false);
       }
-      return;
     }
 
     if (username) {
@@ -275,16 +284,18 @@ const VoiceRecord = () => {
         </Box>
 
         {loadingRecognition && <CircularProgress />}
+        {idMusic ? (
+          <iframe
+            width="560"
+            height="315"
+            src={`https://www.youtube.com/embed/${idMusic}?autoplay=1`}
+            title="YouTube Video Player"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          ></iframe>
+        ) : (
+          ''
+        )}
       </Box>
-      {idMusic && (
-        <iframe
-          width="560"
-          height="315"
-          src={`https://www.youtube.com/embed/${idMusic}?autoplay=1`}
-          title="YouTube Video Player"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        ></iframe>
-      )}
 
       <Tour
         onRequestClose={closeTour}
