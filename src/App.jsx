@@ -6,6 +6,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import AddUser from './pages/AddUser/AddUser';
 import VoiceRecord from './pages/VoiceRecord/VoiceRecord';
 import { useEffect } from 'react';
+import useStore from './globalStore';
+import { Alert, Snackbar } from '@mui/material';
 // import { useState } from 'react';
 
 const MainContent = styled.div`
@@ -19,6 +21,8 @@ const MainContent = styled.div`
 `;
 
 function App() {
+  const { loginSuccess, setLoginSuccess } = useStore();
+
   useEffect(() => {
     if (localStorage.getItem('firstList') !== 'false') {
       localStorage.setItem('firstList', true);
@@ -31,6 +35,19 @@ function App() {
     }
     // localStorage.setItem('firstList', true);
   }, []);
+
+  useEffect(() => {
+    if (loginSuccess) {
+      // Set loginSuccess to false after 3 seconds
+      const timeoutId = setTimeout(() => {
+        setLoginSuccess(false);
+      }, 3000);
+
+      // Cleanup function to clear the timeout if the component unmounts or if loginSuccess changes
+      return () => clearTimeout(timeoutId);
+    }
+  }, [loginSuccess, setLoginSuccess]);
+
   return (
     <>
       <Router>
@@ -44,6 +61,15 @@ function App() {
           </Routes>
         </MainContent>
       </Router>
+      <Snackbar
+        open={loginSuccess}
+        autoHideDuration={3000}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      >
+        <Alert severity="success" variant="filled" sx={{ width: '100%' }}>
+          Identify successful!
+        </Alert>
+      </Snackbar>
     </>
   );
 }

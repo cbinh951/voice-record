@@ -1,11 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import {
-  Button,
-  Box,
-  Typography,
-  TextareaAutosize,
-  CircularProgress,
-} from '@mui/material';
+import { useState, useEffect } from 'react';
+import { Button, Box, Typography, CircularProgress } from '@mui/material';
 import MicIcon from '@mui/icons-material/Mic';
 import './VoiceRecord.css';
 import AudioReactRecorder, { RecordState } from 'audio-react-recorder';
@@ -13,6 +7,7 @@ import AudioReactRecorder, { RecordState } from 'audio-react-recorder';
 import 'audio-react-recorder/dist/index.css';
 import { useNavigate, useSearchParams } from 'react-router-dom'; // Import useHistory
 import Tour from 'reactour';
+import useStore from '../../globalStore';
 
 const tourConfigRecord = [
   {
@@ -34,7 +29,6 @@ const VoiceRecord = () => {
   const [recordState, setRecordState] = useState(RecordState.STOP);
   const [audioData, setAudioData] = useState(null);
   const [isIdentifySuccess, setIsIdentifySuccess] = useState(false);
-  const [dataRecognition, setDataRecognition] = useState('');
   const [loadingRecognition, setLoadingRecognition] = useState(false);
   const navigate = useNavigate();
   const userNameStorage = localStorage.getItem('userName');
@@ -42,6 +36,9 @@ const VoiceRecord = () => {
   const username = searchParams.get('username');
   const [isTourOpen, setIsTourOpen] = useState(false);
   const accentColor = '#5cb7b7';
+  const [wakeup, setWakeup] = useState(false);
+  const [idMusic, setIdMusic] = useState(0);
+  const { setLoginSuccess } = useStore();
 
   useEffect(() => {
     const record = localStorage.getItem('record');
@@ -88,21 +85,21 @@ const VoiceRecord = () => {
     const formData = new FormData();
     formData.append('file', audioData.blob, 'audio.wav');
     if (isIdentifySuccess) {
-      setLoadingRecognition(true);
-      formData.append('file', audioData.blob, 'audio.wav');
       const response = await fetch(
-        'https://voice-backend.cyberdino.dev/voice_recognition',
+        'https://voice-backend.cyberdino.dev/command',
         {
           method: 'POST',
           body: formData,
         }
       );
-      const responseData = await response
-        .json()
-        .finally(setLoadingRecognition(false));
-      setDataRecognition(responseData.text);
+      const data = await response.json();
+      console.log('data', data);
+      if (data.command === 'play music') {
+        setIdMusic(data.value);
+      }
       return;
     }
+
     if (username) {
       formData.append('username', username);
       const response = await fetch(
@@ -154,6 +151,9 @@ const VoiceRecord = () => {
           .catch((error) => {
             // Handle error if any
             console.error('Error:', error);
+          })
+          .finally(() => {
+            setLoginSuccess(true);
           });
         console.log('responseGreet', responseGreet);
       } else if (responseData.speaker === 'unknown') {
@@ -188,6 +188,10 @@ const VoiceRecord = () => {
           .catch((error) => {
             // Handle error if any
             console.error('Error:', error);
+          })
+          .finally(() => {
+            console.log('Finished playing unknown greeting sound.');
+            setLoginSuccess(true);
           });
       }
     } else {
@@ -271,10 +275,17 @@ const VoiceRecord = () => {
         </Box>
 
         {loadingRecognition && <CircularProgress />}
-        {!loadingRecognition && dataRecognition && (
-          <TextareaAutosize maxRows={40} minRows={25} value={dataRecognition} />
-        )}
       </Box>
+      {idMusic && (
+        <iframe
+          width="560"
+          height="315"
+          src={`https://www.youtube.com/embed/${idMusic}?autoplay=1`}
+          title="YouTube Video Player"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        ></iframe>
+      )}
+
       <Tour
         onRequestClose={closeTour}
         steps={tourConfigRecord}
